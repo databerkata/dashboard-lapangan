@@ -7,7 +7,7 @@
  Cloudflare belum tentu aktif. Perlu uji manual: GIS menyuntik iframe. -->
 <meta http-equiv="Content-Security-Policy" content="
  default-src 'self';
- script-src 'self' 'sha256-haPCNLzsnvA2kJ6kwQUSzJBEefmNp1TsOBKuunnQKws=' 'sha256-BDdFOYWhPeJCnmZdfMyM5cyOt2zmbqML6F6LuynRovk=' 'sha256-qepnfECz2Wx0lkuo4NJRTyFtUCYHZWg66vg9lCix6jQ=' 'sha256-HwWeh5kwbwW7nIGCLuTWulCZm9lM9z/d5Yaou4ztWWc=' 'sha256-Gtwhtf5fMBHEMhBIZpMguWXddj0cDHGaMpIH9CHLZOo=' https://accounts.google.com https://app.sandbox.midtrans.com https://app.midtrans.com;
+ script-src 'self' 'sha256-haPCNLzsnvA2kJ6kwQUSzJBEefmNp1TsOBKuunnQKws=' 'sha256-IsMz9L6HvZTwr4sKpn9U3XFOYdLrIjQDIfAebYWY+Xc=' 'sha256-WkHsSXRCq3/2S9/lviMl5qi99840ube5LejOCguIOY4=' 'sha256-HwWeh5kwbwW7nIGCLuTWulCZm9lM9z/d5Yaou4ztWWc=' 'sha256-Gtwhtf5fMBHEMhBIZpMguWXddj0cDHGaMpIH9CHLZOo=' https://accounts.google.com https://app.sandbox.midtrans.com https://app.midtrans.com;
  style-src 'self' 'unsafe-inline';
  img-src 'self' data: https://ui-avatars.com https://lh3.googleusercontent.com https://app.sandbox.midtrans.com https://app.midtrans.com;
  font-src 'self';
@@ -1086,6 +1086,7 @@ table.tbl tbody tr:hover td{ background:var(--bg3); }
 .fld-label{ display:block; font-size:14px; font-weight:var(--fw-medium); margin-bottom:2px; letter-spacing:.02em; }
 
 .price-strike{ color:var(--text3); font-weight:var(--fw-regular); text-decoration:line-through; text-decoration-thickness:1px; margin-right:2px; }
+.price-from{ font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.04em; }
 
 .slot-legend .l-off i{ background:var(--ok); }
 
@@ -1530,7 +1531,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline
  <div>
  <h3>LapanganKu</h3>
  <p>Booking lapangan bulu tangkis online. Pilih jam, bayar, langsung main.</p>
- <p style="margin-top:10px; font-size:12px">Jl. Olahraga Raya No. 8, Jakarta Selatan<br>Buka setiap hari 06.00 - 22.00</p>
+ <p style="margin-top:10px; font-size:12px">Jl. Olahraga Raya No. 8, Jakarta Selatan<br>Buka setiap hari 06.00 - 22.00 WIB</p>
+ <p style="margin-top:8px; font-size:12px"><a class="flink" href="https://wa.me/6281882822112" target="_blank" rel="noopener">WA: +62 818-8282-2112</a><br><a class="flink" href="mailto:info.databerkata@gmail.com">info.databerkata@gmail.com</a></p>
  </div>
  <div>
  <h3>Menu</h3>
@@ -1730,7 +1732,7 @@ function landingReviewsHtml() {
           '<span class="review-quote" aria-hidden="true">' + ICONS.quote + '</span>' +
           starHtml(Number(r.rating)) +
           '<blockquote>' + esc(r.komentar) + '</blockquote>' +
-          '<figcaption><b>' + esc(r.nama) + '</b>' +
+          '<figcaption><b>' + esc(r.nama) + '</b> ' +
             '<span class="muted">' + (c ? esc(c.nama) : esc(r.venue_id)) + (r.tanggal ? ' · ' + fmtDate(r.tanggal) : '') + '</span>' +
           '</figcaption>' +
         '</figure>';
@@ -1745,8 +1747,13 @@ function courtPriceHtml(c) {
   const o = offCfg();
   if (!o.hours.length || o.mult >= 1) return fmtRp(c.harga_per_jam) + ' <small>/jam</small>';
   const cheapest = Math.round(c.harga_per_jam * o.mult);
-  return '<s class="price-strike">' + fmtRp(c.harga_per_jam) + '</s> ' +
+  return '<span class="price-from">Mulai dari</span> ' +
          fmtRp(cheapest) + ' <small>/jam</small>';
+}
+function courtPriceAria(c) {
+  const o = offCfg();
+  if (!o.hours.length || o.mult >= 1) return fmtRp(c.harga_per_jam) + ' per jam';
+  return 'mulai dari ' + fmtRp(Math.round(c.harga_per_jam * o.mult)) + ' per jam';
 }
 // WHY dipecah per section (audit Rule 12.1): landingSectionsHtml dulu 67 baris berisi 6 section
 // inline. Satu fungsi = satu section membuat perubahan copy/layout tidak menyentuh section lain.
@@ -1762,7 +1769,7 @@ function secHargaHtml(courts, minPrice) {
       courts.map((c, i) =>
         // WHY: tanpa aria-label - nama visible "Lapangan N" sudah jadi accessible name; label terpisah "Booking ..."
         // memicu Lighthouse label-content-name-mismatch (nama terlihat vs nama a11y harus cocok, WCAG 2.5.3)
-        '<a class="court-row reveal" href="#/booking" aria-label="' + esc(c.nama) + ', ' + fmtRp(c.harga_per_jam) + ' per jam, booking">' +
+        '<a class="court-row reveal" href="#/booking" aria-label="' + esc(c.nama) + ', ' + courtPriceAria(c) + ', booking">' +
           '<span class="idx">0' + (i + 1) + '</span>' +
           '<span class="cwrap">' +
             '<span class="cname">' + esc(c.nama) + '</span>' +
@@ -2194,11 +2201,14 @@ function bookingCourtsHtml() {
   const avail = b.hour != null ? bookingCourts().filter(c => courtFree(c.id, b.date, b.hour, b.duration)) : [];
   if (!avail.length) return '<p class="t-sm faint">Slot yang kamu pilih akan menentukan lapangan yang tersedia.</p>';
   return '<div class="court-picks" id="court-picks">' +
-    avail.map(c => '<button class="court-pick" data-court="' + c.id + '" aria-pressed="' + (b.court === c.id) + '">' +
+    avail.map(c => {
+      const hrPrice = hourPriceAt(c, b.date, b.hour);
+      const tag = isPeak(b.date, b.hour) ? ' <small>(sibuk)</small>' : (isOffPeak(b.date, b.hour) ? ' <small>(sepi)</small>' : '');
+      return '<button class="court-pick" data-court="' + c.id + '" aria-pressed="' + (b.court === c.id) + '" aria-label="' + esc(c.nama) + ', ' + fmtRp(hrPrice) + ' per jam' + (isPeak(b.date, b.hour) ? ', jam sibuk' : (isOffPeak(b.date, b.hour) ? ', jam sepi' : '')) + '">' +
       '<span class="cp-name">' + esc(c.nama) + '</span>' +
-      '<span class="cp-price">' + fmtRp(c.harga_per_jam) + '<small>/jam</small></span>' +
+      '<span class="cp-price">' + fmtRp(hrPrice) + '<small>/jam</small>' + tag + '</span>' +
       '<span class="cp-state">' + (b.court === c.id ? 'Dipilih' : 'Pilih') + '</span>' +
-    '</button>').join('') + '</div>';
+      '</button>'; }).join('') + '</div>';
 }
 function bookingBarHtml() {
   const b = state.booking, court = bookingSelectedCourt();
