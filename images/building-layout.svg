@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 565" fill="none">
+  <rect width="560" height="565" fill="#FFFFFF"/>
+  <rect x="61" y="61" width="201" height="91.5" fill="#0E7C4A"/>
+  <rect x="61" y="61" width="201" height="91.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <line x1="61" y1="67.9" x2="262" y2="67.9" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="61" y1="145.6" x2="262" y2="145.6" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="72.4" y1="61" x2="72.4" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="250.6" y1="61" x2="250.6" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="131.8" y1="61" x2="131.8" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="191.2" y1="61" x2="191.2" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="61" y1="106.75" x2="131.8" y2="106.75" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="191.2" y1="106.75" x2="262" y2="106.75" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="161.5" y1="61" x2="161.5" y2="152.5" stroke="#FFFFFF" stroke-width="2.2"/>
+  <text x="111.25" y="113.75" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="21" font-weight="600" fill="#FFFFFF">LK1</text>
+  <rect x="292" y="61" width="201" height="91.5" fill="#0E7C4A"/>
+  <rect x="292" y="61" width="201" height="91.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <line x1="292" y1="67.9" x2="493" y2="67.9" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="292" y1="145.6" x2="493" y2="145.6" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="303.4" y1="61" x2="303.4" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="481.6" y1="61" x2="481.6" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="362.8" y1="61" x2="362.8" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="422.2" y1="61" x2="422.2" y2="152.5" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="292" y1="106.75" x2="362.8" y2="106.75" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="422.2" y1="106.75" x2="493" y2="106.75" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="392.5" y1="61" x2="392.5" y2="152.5" stroke="#FFFFFF" stroke-width="2.2"/>
+  <text x="342.25" y="113.75" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="21" font-weight="600" fill="#FFFFFF">LK2</text>
+  <rect x="61" y="182.5" width="201" height="91.5" fill="#0E7C4A"/>
+  <rect x="61" y="182.5" width="201" height="91.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <line x1="61" y1="189.4" x2="262" y2="189.4" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="61" y1="267.1" x2="262" y2="267.1" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="72.4" y1="182.5" x2="72.4" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="250.6" y1="182.5" x2="250.6" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="131.8" y1="182.5" x2="131.8" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="191.2" y1="182.5" x2="191.2" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="61" y1="228.25" x2="131.8" y2="228.25" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="191.2" y1="228.25" x2="262" y2="228.25" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="161.5" y1="182.5" x2="161.5" y2="274" stroke="#FFFFFF" stroke-width="2.2"/>
+  <text x="111.25" y="235.25" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="21" font-weight="600" fill="#FFFFFF">LK3</text>
+  <rect x="292" y="182.5" width="201" height="91.5" fill="#0E7C4A"/>
+  <rect x="292" y="182.5" width="201" height="91.5" fill="none" stroke="#FFFFFF" stroke-width="1.6"/>
+  <line x1="292" y1="189.4" x2="493" y2="189.4" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="292" y1="267.1" x2="493" y2="267.1" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="303.4" y1="182.5" x2="303.4" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="481.6" y1="182.5" x2="481.6" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="362.8" y1="182.5" x2="362.8" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="422.2" y1="182.5" x2="422.2" y2="274" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="292" y1="228.25" x2="362.8" y2="228.25" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="422.2" y1="228.25" x2="493" y2="228.25" stroke="#FFFFFF" stroke-width="1"/>
+  <line x1="392.5" y1="182.5" x2="392.5" y2="274" stroke="#FFFFFF" stroke-width="2.2"/>
+  <text x="342.25" y="235.25" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="21" font-weight="600" fill="#FFFFFF">LK4</text>
+  <line x1="61" y1="152.5" x2="493" y2="152.5" stroke="#111111" stroke-width="1.1"/>
+  <line x1="61" y1="182.5" x2="493" y2="182.5" stroke="#111111" stroke-width="1.1"/>
+  <text x="277" y="173.5" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="16" letter-spacing="3" fill="#111111">KORIDOR</text>
+  <rect x="61" y="302" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="130.33" y="332" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">LOCKER</text>
+  <rect x="207.67" y="302" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="277" y="332" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">KM</text>
+  <rect x="354.33" y="302" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="423.67" y="332" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">KANTIN</text>
+  <rect x="61" y="356" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="130.33" y="377" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">RUANG</text>
+  <text x="130.33" y="399" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">TUNGGU</text>
+  <rect x="207.67" y="356" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="277" y="386" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">MUSALA</text>
+  <rect x="354.33" y="356" width="138.67" height="46" fill="none" stroke="#111111" stroke-width="1.3"/>
+  <text x="423.67" y="386" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="19" fill="#111111">RESEPSI</text>
+  <path d="M46 46 H508 V417 H319 M235 417 H46 Z" fill="none" stroke="#111111" stroke-width="4.5"/>
+  
+  
+  <line x1="238.5" y1="417" x2="238.5" y2="469" stroke="#111111" stroke-width="1.6"/>
+  <path d="M322.5 417 A52 52 0 0 1 238.5 469" fill="none" stroke="#111111" stroke-width="1" stroke-opacity=".45"/>
+  <text x="277" y="439" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="16" fill="#111111">PINTU MASUK</text>
+  <rect x="46" y="469" width="462" height="40" fill="none" stroke="#111111" stroke-width="1.2"/>
+  <rect x="56" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <rect x="130.5" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <rect x="205" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <rect x="279.5" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <rect x="354" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <rect x="428.5" y="494" width="69.5" height="26" fill="none" stroke="#111111" stroke-width=".9" stroke-opacity=".5"/>
+  <text x="277" y="545" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="16" letter-spacing="2" fill="#111111">PARKIR (6 BAY)</text>
+  <line x1="46" y1="30" x2="508" y2="30" stroke="#111111" stroke-width="1"/>
+  <line x1="46" y1="24" x2="46" y2="36" stroke="#111111" stroke-width="1"/>
+  <line x1="508" y1="24" x2="508" y2="36" stroke="#111111" stroke-width="1"/>
+  <text x="277" y="20" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="15" fill="#111111">30,8 m</text>
+  <line x1="24" y1="46" x2="24" y2="417" stroke="#111111" stroke-width="1"/>
+  <line x1="18" y1="46" x2="30" y2="46" stroke="#111111" stroke-width="1"/>
+  <line x1="18" y1="417" x2="30" y2="417" stroke="#111111" stroke-width="1"/>
+  <text x="24" y="231.5" text-anchor="middle" font-family='"Helvetica Neue",Helvetica,Arial,sans-serif' font-size="15" fill="#111111" transform="rotate(-90 24 231.5)" dy="-10">24,7 m</text>
+</svg>
