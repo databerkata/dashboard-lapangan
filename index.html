@@ -7,7 +7,7 @@
  Cloudflare belum tentu aktif. Perlu uji manual: GIS menyuntik iframe. -->
 <meta http-equiv="Content-Security-Policy" content="
  default-src 'self';
- script-src 'self' 'sha256-haPCNLzsnvA2kJ6kwQUSzJBEefmNp1TsOBKuunnQKws=' 'sha256-Nwl8nN6/8SeqCSeEE9CQO1UGb4icCwXQM47wy+btN9U=' 'sha256-WkHsSXRCq3/2S9/lviMl5qi99840ube5LejOCguIOY4=' 'sha256-HwWeh5kwbwW7nIGCLuTWulCZm9lM9z/d5Yaou4ztWWc=' 'sha256-Gtwhtf5fMBHEMhBIZpMguWXddj0cDHGaMpIH9CHLZOo=' https://accounts.google.com https://app.sandbox.midtrans.com https://app.midtrans.com;
+ script-src 'self' 'sha256-haPCNLzsnvA2kJ6kwQUSzJBEefmNp1TsOBKuunnQKws=' 'sha256-Nwl8nN6/8SeqCSeEE9CQO1UGb4icCwXQM47wy+btN9U=' 'sha256-WkHsSXRCq3/2S9/lviMl5qi99840ube5LejOCguIOY4=' 'sha256-HwWeh5kwbwW7nIGCLuTWulCZm9lM9z/d5Yaou4ztWWc=' 'sha256-gmzVWl6V0kvw76bz9uDej985PSmUjbhYJYdbqVl4X98=' https://accounts.google.com https://app.sandbox.midtrans.com https://app.midtrans.com;
  style-src 'self' 'unsafe-inline';
  img-src 'self' data: https://ui-avatars.com https://lh3.googleusercontent.com https://app.sandbox.midtrans.com https://app.midtrans.com;
  font-src 'self';
@@ -6264,9 +6264,26 @@ window.addEventListener('beforeinstallprompt', (e) => {
   }, 3000);
 });
 
+// WHY: white-label per venue — dibaca dari CONFIG (disuntik build --venue via
+// Object.assign). Versi hardened: nama di-escape, logo hanya http(s).
+function applyWhiteLabel(config) {
+  if (!config) return;
+  const root = document.documentElement;
+  if (config.brandColor) root.style.setProperty('--brand', config.brandColor);
+  if (config.brandColor2) root.style.setProperty('--brand2', config.brandColor2);
+  if (config.bgColor) root.style.setProperty('--bg', config.bgColor);
+  if (config.textColor) root.style.setProperty('--text', config.textColor);
+  if (config.logo && /^https?:\/\//i.test(config.logo)) {
+    const logo = document.querySelector('.logo');
+    if (logo) logo.innerHTML = '<img src="' + esc(config.logo) + '" alt="" style="height:26px"> <span>' + esc(config.name || 'LapanganKu') + '</span>';
+  }
+  if (config.name) document.title = config.name;
+}
+
 async function init() {
   initTheme();
   initLang();
+  applyWhiteLabel(CONFIG);
   initWebVitals();
   trackEvent('landing_view', { demo: state.data && state.data.demo });
   restoreSession();
