@@ -861,7 +861,20 @@ function handleLoyaltyRedeem(body, user) {
 }
 
 /* ============ SHEET HELPERS ============ */
-function ss() { return SpreadsheetApp.getActiveSpreadsheet(); }
+// WHY (fix 2026-10-21): project produksi ini STANDALONE — getActiveSpreadsheet()
+// mengembalikan null sehingga semua baca/tulis sheet gagal (terbukti live setelah
+// redeploy v2: getPublicData SERVER_ERROR + allowed_origins dari Config tidak terbaca).
+// Buka spreadsheet by ID bila tidak ada spreadsheet aktif; project bound (instalasi
+// venue) tetap memakai spreadsheet aktifnya. ID bisa dioverride via Script Property
+// SPREADSHEET_ID untuk instalasi venue standalone.
+var SPREADSHEET_ID = '1rFK9cggqmauQ03sipZMs2EHc8mpfWh8TkEKmonRjCH0';
+function ss() {
+  var active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+  var id = '';
+  try { id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID') || ''; } catch (e) {}
+  return SpreadsheetApp.openById(id || SPREADSHEET_ID);
+}
 
 function readSheet(name) {
   var sh = ss().getSheetByName(name);
