@@ -45,7 +45,9 @@ function getAllowedOrigins() {
     if (hit) return base.concat(JSON.parse(hit));
     extra = String(readConfig().allowed_origins || '').split(/[;,\s]+/)
       .map(function (s) { return s.trim().replace(/\/+$/, ''); }).filter(Boolean);
-    cache.put('lk_allowed_origins', JSON.stringify(extra), 21600);
+    // WHY: hasil kosong di-cache singkat (600 dtk, minimum CacheService) — tanpa ini,
+    // venue yang baru mengisi allowed_origins harus menunggu cache 6 jam kedaluwarsa.
+    cache.put('lk_allowed_origins', JSON.stringify(extra), extra.length ? 21600 : 600);
   } catch (e) { /* fail-open ke base */ }
   return base.concat(extra);
 }
