@@ -25,8 +25,9 @@ const DEMO_CONFIG = {
   jam_buka_mulai: 6, jam_buka_selesai: 22, slot_minutes: 60, max_advance_days: 14,
   cancel_cutoff_hours: 2, booking_lead_hours: 2, max_hours_per_booking: 3, harga_default: 45000,
   peak_hours: '18,19,20', peak_days: '1,2,3,4,5', peak_multiplier: 1.5,
-  off_hours: '6,7,8,21', off_days: '1,2,3,4,5', off_multiplier: 0.8,
-  vouchers: 'HEMAT20:20,PAGI10:10'
+  off_hours: '6,7,8,21', off_days: '1,2,3,4,5', off_multiplier: 0.8
+  // WHY (2026-10-22): kunci 'vouchers' dibuang - sistem voucher dihapus total
+  // 2026-10-11; fixture ini dulu menyimpannya sehingga generator menguji produk lama.
 };
 const DEMO_COURTS = [1, 2, 3, 4].map((n) => ({
   id: 'LK' + n, nama: 'Lapangan ' + n, olahraga: 'Bulu Tangkis', harga_per_jam: 45000, status: 'aktif'
@@ -73,15 +74,24 @@ vm.runInContext('var LANDING_FACS = ' + extract(LANDING, 'LANDING_FACS').replace
 const minPrice = Math.min(...DEMO_COURTS.map((c) => c.harga_per_jam));
 const html = vm.runInContext(`landingHeroHtml(state.data.config, state.data.courts, ${minPrice}) + landingSectionsHtml(state.data.courts, ${minPrice})`, ctx);
 
-// WHY (P2, fix 2026-10-22): gambar first-paint di-inline sebagai data URI agar shell
-// TIDAK pecah saat index.html dibuka sendirian (file:// — mis. file demo yang dikirim
-// ke calon venue; itulah janji produk single-file). Sebelumnya shell memakai path
-// images/ relatif yang hanya selamat bila folder images/ kebetulan ada di sebelahnya.
-// Runtime pasca-hydration tetap memakai path images/ relatif (konteks deploy normal:
-// folder images/ ikut tersaji, atau assetBase venue menunjuk ke host aset).
+// WHY (P2, fix 2026-10-22; dikoreksi di hari yang sama): gambar first-paint di-inline
+// sebagai data URI agar shell TIDAK pecah saat index.html dibuka sendirian (file:// —
+// mis. file demo yang dikirim ke calon venue; itulah janji produk single-file).
+// Sebelumnya shell memakai path images/ relatif yang hanya selamat bila folder
+// images/ kebetulan ada di sebelahnya.
+// KOREKSI: inline src= saja TIDAK cukup — di dalam <picture>, browser modern memakai
+// srcset milik <source>/img dan MENGABAIKAN src. Shell masih memuat 8 srcset relatif
+// sehingga hero/galeri tetap pecah di file://. Karena itu shell juga dibersihkan dari
+// <source> dan atribut srcset: markup shell memang hanya untuk first paint (varian
+// responsif adalah urusan konteks hosted), dan <img src> data URI menjadi satu-satunya
+// sumber gambar di shell.
+// Runtime pasca-hydration tidak disentuh: ia memakai data URI-nya sendiri.
 // Biaya jujur: blok SSR membesar sebesar total base64 gambar-gambar ini.
 const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
-const inlined = html.replace(/src="images\/([^"]+)"/g, (whole, f) => {
+const stripped = html
+  .replace(/<source[^>]*>/g, '')
+  .replace(/ srcset="[^"]*"/g, '');
+const inlined = stripped.replace(/src="images\/([^"]+)"/g, (whole, f) => {
   const p = join(ROOT, 'lapanganku', 'images', f);
   if (!existsSync(p)) return whole;
   const ext = f.slice(f.lastIndexOf('.')).toLowerCase();

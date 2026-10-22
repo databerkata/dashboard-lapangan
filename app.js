@@ -158,7 +158,7 @@ const state = {
   loadError: null,
   allBookings: [],
   intended: null,
-  booking: Object.assign({ tab: 'baru', date: todayStr(), hour: null, duration: 1, court: null, pay: 'full', addons: {} }, store.get('lk-draft-v1', {})),
+  booking: Object.assign({ tab: 'baru', date: todayStr(), hour: null, duration: 1, court: null, pay: 'full', addons: {}, splitCount: null, recurWeeks: null }, store.get('lk-draft-v1', {})),
   owner: { tab: 'dash', date: todayStr(), fDate: '', fCourt: '', fStatus: '', q: '' },
   // Feature flags for A/B testing
   flags: {
@@ -168,11 +168,6 @@ const state = {
     pushNotifications: false
   }
 };
-
-// Feature flag helper
-function isEnabled(flag) {
-  return state.flags && state.flags[flag] === true;
-}
 
 // A/B test assignment
 function assignTest(testName, variants) {
@@ -193,11 +188,13 @@ const DEMO_CONFIG = {
   peak_hours: '18,19,20', peak_days: '1,2,3,4,5', peak_multiplier: 1.5,
   // WHY: jam sepi (adopsi riset kompetitor) - diskon 20% jam yang biasanya kosong
   off_hours: '6,7,8,21', off_days: '1,2,3,4,5', off_multiplier: 0.8,
-  // WHY: voucher kode promo (adopsi AYO harga coret) - format "KODE:PERSEN,KODE:PERSEN"
-  vouchers: 'HEMAT20:20,PAGI10:10',
+  // WHY (2026-10-11): sistem voucher DIHAPUS total atas keputusan Mas.
   // WHY: harga dinamis (FITUR 4, spek 2026-10-10) - diskon otomatis jam sepi bila okupansi
   // menjelang hari-H di bawah ambang. Aktif default di demo agar perilaku terlihat tanpa setup.
-  dyn_enabled: '1', dyn_threshold: 30, dyn_days_before: 1, dyn_extra_pct: 10
+  dyn_enabled: '1', dyn_threshold: 30, dyn_days_before: 1, dyn_extra_pct: 10,
+  // WHY (revisi 2026-10-11): katalog reward loyalty - format "ID:Nama:poin,ID:Nama:poin".
+  // Client (venue owner) bisa ubah nama & biaya poin via config. ID stabil untuk tracking.
+  loyalty_rewards: 'DRINK:Minuman segar:50,SNACK:Snack ringan:75,FREE1H:Gratis 1 jam lapangan:500'
 };
 const DEMO_COURTS = [
   { id: 'LK1', nama: 'Lapangan 1', olahraga: 'Bulu Tangkis', harga_per_jam: 45000, status: 'aktif' },
@@ -253,14 +250,14 @@ const demoStore = {
   key: 'lk-demo-bookings',
   all() { return store.get(this.key, []); },
   save(list) { store.set(this.key, list); },
-  mine() { const u = state.user; return u ? this.all().filter(b => b.email === u.email) : []; }
+  mine() { const u = effectiveUser(); return u ? this.all().filter(b => b.email === u.email) : []; }
 };
 // WHY: waitlist demo di localStorage - fitur live (server) punya alur sama via sheet Waitlist
 const demoWaitlistStore = {
   key: 'lk-demo-waitlist',
   all() { return store.get(this.key, []); },
   save(list) { store.set(this.key, list); },
-  mine() { const u = state.user; return u ? this.all().filter(w => w.email === u.email && w.status === 'active') : []; }
+  mine() { const u = effectiveUser(); return u ? this.all().filter(w => w.email === u.email && w.status === 'active') : []; }
 };
 
 /* ---------- toast ---------- */
@@ -541,6 +538,9 @@ function logout() {
         state.user = null; state.credential = null; store.del('lk-session');
         state.myBookings = []; state.allBookings = []; state.slots = {}; state.waitlist = [];
         state.intended = null;
+        // WHY (Batch A, security): antrean offline + draft milik user lama tidak boleh terbaca
+        // atau ter-replay oleh pengguna berikutnya di perangkat bersama.
+        syncQueue.length = 0; store.del('lk-sync-queue'); store.del('lk-draft-v1');
         updateAuthUI(); renderNav(); route();
         toast('Kamu sudah keluar. Sampai jumpa!', 'info');
       });
@@ -1010,6 +1010,14 @@ async function processSyncQueue() {
   syncInProgress = true;
   while (syncQueue.length) {
     const item = syncQueue[0];
+    // WHY (Batch A, security): antrean offline di-replay dengan kredensial sesi SAAT INI.
+    // Tanpa cap email, skenario perangkat bersama (A antre offline -> A logout -> B login ->
+    // online) menyimpan booking berisi PII A atas identitas B. Item yang email-nya tidak
+    // cocok dengan sesi aktif dibuang, bukan di-replay.
+    if (item.email && (!state.user || item.email !== state.user.email)) {
+      syncQueue.shift();
+      continue;
+    }
     try {
       await apiOnce(item.action, item.payload);
       syncQueue.shift();
@@ -1028,7 +1036,7 @@ window.addEventListener('online', () => {
 async function api(action, payload) {
   // Queue mutations when offline
   if (!navigator.onLine && ['createBooking', 'cancelBooking', 'rescheduleBooking', 'ownerUpdateBooking', 'ownerCreateBooking', 'waitlistJoin', 'waitlistCancel', 'submitReview'].includes(action)) {
-    syncQueue.push({ action, payload });
+    syncQueue.push({ action, payload, email: state.user ? state.user.email : null }); // WHY (Batch A): cap identitas saat enqueue, lihat processSyncQueue.
     store.set('lk-sync-queue', syncQueue);
     throw new Error('Koneksi terputus. Perubahan akan disimpan saat online.');
   }
@@ -1369,7 +1377,7 @@ function openPrivacy() {
     title: 'Kebijakan Privasi',
     body: '<p class="t-sm muted">LapanganKu mengumpulkan nama, email, dan foto profil dari akun Google kamu saat login, plus data booking (jadwal, lapangan, pembayaran simulasi).</p>' +
       '<p class="t-sm muted" style="margin-top:8px">Data dipakai hanya untuk operasional booking venue: konfirmasi jadwal, check-in, dan rekap internal pemilik venue.</p>' +
-      '<p class="t-sm muted" style="margin-top:8px">Data disimpan selama venue beroperasi dan tidak dibagikan ke pihak lain. Kamu berhak minta akses atau hapus data kapan saja lewat WhatsApp 0812-0000-0000 (contoh).</p>' +
+      '<p class="t-sm muted" style="margin-top:8px">Data disimpan selama venue beroperasi dan tidak dibagikan ke pihak lain. Kamu berhak minta akses atau hapus data kapan saja lewat kontak venue.</p>' +
       '<p class="t-xs faint" style="margin-top:8px;">Sesuai UU PDP No. 27 Tahun 2022.</p>'
   });
 }
@@ -1377,7 +1385,7 @@ function openA11y() {
   Modal.open({
     title: 'Pernyataan Aksesibilitas',
     body: '<p class="t-sm muted">LapanganKu berkomitmen memenuhi WCAG 2.1 level AA: kontras warna memadai, navigasi keyboard penuh, label untuk pembaca layar, dan dukungan preferensi reduced motion.</p>' +
-      '<p class="t-sm muted" style="margin-top:8px">Menemukan hambatan akses? Laporkan ke WhatsApp 0812-0000-0000 (contoh), kami perbaiki secepatnya.</p>'
+      '<p class="t-sm muted" style="margin-top:8px">Menemukan hambatan akses? Laporkan ke kontak venue, kami perbaiki secepatnya.</p>'
   });
 }
 
@@ -1407,6 +1415,14 @@ function observeReveals(scope) {
     window.addEventListener('resize', sweepReveals, { passive: true });
     window.addEventListener('wheel', sweepReveals, { passive: true });
     window.addEventListener('touchmove', sweepReveals, { passive: true });
+    // WHY (critique P1): header translusen bikin konten terbaca sebagai ghost-text saat scroll.
+    // Jadi solid setelah scroll >8px - pola iOS Safari.
+    const hdr = document.querySelector('.hdr');
+    if (hdr) {
+      const onScrollHdr = () => hdr.classList.toggle('scrolled', window.scrollY > 8);
+      window.addEventListener('scroll', onScrollHdr, { passive: true });
+      onScrollHdr();
+    }
   }
 }
 
@@ -1554,51 +1570,6 @@ function updateOnlineStatus() {
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-// Pull-to-refresh for mobile
-let pullStartY = 0;
-let pullDistance = 0;
-let isPulling = false;
-const PULL_THRESHOLD = 80;
-
-document.addEventListener('touchstart', (e) => {
-  if (window.scrollY === 0 && e.touches.length === 1) {
-    pullStartY = e.touches[0].clientY;
-    isPulling = true;
-  }
-}, { passive: true });
-
-document.addEventListener('touchmove', (e) => {
-  if (!isPulling) return;
-  pullDistance = e.touches[0].clientY - pullStartY;
-  if (pullDistance > 0 && pullDistance < PULL_THRESHOLD * 2) {
-    const pullIndicator = document.getElementById('pull-indicator');
-    if (pullIndicator) {
-      pullIndicator.style.height = Math.min(pullDistance, PULL_THRESHOLD) + 'px';
-      pullIndicator.style.opacity = pullDistance > PULL_THRESHOLD ? '1' : '0.5';
-    }
-  }
-}, { passive: true });
-
-document.addEventListener('touchend', () => {
-  if (!isPulling) return;
-  isPulling = false;
-  if (pullDistance > PULL_THRESHOLD) {
-    // Trigger refresh
-    const pullIndicator = document.getElementById('pull-indicator');
-    if (pullIndicator) {
-      pullIndicator.style.height = '0';
-      pullIndicator.style.opacity = '0';
-    }
-    if (state.route === '/booking' && state.booking.date) {
-      loadSlots(state.booking.date).then(() => {
-        renderBookingNew($('#bk-main'));
-        toast('Data slot diperbarui.', 'ok');
-      });
-    }
-  }
-  pullDistance = 0;
-}, { passive: true });
-
 /* ---------- keyboard shortcuts ---------- */
 // WHY: power user navigation - shortcut cepat tanpa mouse
 document.addEventListener('keydown', (e) => {
@@ -1724,6 +1695,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 async function init() {
   initTheme();
   initLang();
+  applyWhiteLabel(CONFIG);
   initWebVitals();
   trackEvent('landing_view', { demo: state.data && state.data.demo });
   restoreSession();
