@@ -1688,11 +1688,31 @@ function rescheduleBookingTx(id, newDate, newHour, user) {
   if (hasBookingClash(venueId, newDate, newJam, durasi, id)) {
     return err('CLASH', 'Slot baru sudah dipesan. Pilih jam lain.');
   }
+  // WHY (P2, fix 2026-10-22): total_harga WAJIB dihitung ulang untuk slot baru dengan
+  // rumus yang sama persis seperti pembuatan booking (bookingTotal + okupansi tanggal
+  // baru, termasuk peak/off-peak/dinamis). Tanpa ini, pindah dari jam sepi ke jam peak
+  // (atau sebaliknya) tetap memakai harga lama — sumber sengketa dengan penyewa.
+  // Add-on tidak berubah saat reschedule, jadi addon_total lama dipertahankan di atas
+  // harga lapangan baru. Selisih dikembalikan agar client bisa menginformasikan ke
+  // penyewa (penyelesaian selisih bayar mengikuti alur venue seperti DP di tempat).
+  var h0 = f.head;
+  var oldTotal = Number(f.values[f.row][h0.indexOf('total_harga')]) || 0;
+  var addonTotal = Number(f.values[f.row][h0.indexOf('addon_total')]) || 0;
+  var newTotal = oldTotal;
+  var court = null;
+  courtsList().forEach(function (c) { if (String(c.id) === venueId) court = c; });
+  if (court) {
+    var today = Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd');
+    var occ = dayOccupancyPct(cfg, newDate);
+    newTotal = bookingTotal(cfg, court, newDate, newJam, durasi, occ, today) + addonTotal;
+  }
   f.sh.getRange(f.row + 1, f.iTanggal + 1).setValue(newDate);
   f.sh.getRange(f.row + 1, f.iJam + 1).setValue(pad(newJam) + ':00');
+  if (newTotal !== oldTotal) f.sh.getRange(f.row + 1, h0.indexOf('total_harga') + 1).setValue(newTotal);
   var v = f.values[f.row], h = f.head;
   return { booking_id: id, venue_id: venueId, tanggal: newDate,
-    jam_mulai: pad(newJam) + ':00', durasi: durasi, total_harga: Number(v[h.indexOf('total_harga')]) || 0,
+    jam_mulai: pad(newJam) + ':00', durasi: durasi, total_harga: newTotal,
+    total_harga_lama: oldTotal, selisih_harga: newTotal - oldTotal,
     payment_option: String(v[h.indexOf('payment_option')]) };
 }
 function handleRescheduleBooking(body, user) {

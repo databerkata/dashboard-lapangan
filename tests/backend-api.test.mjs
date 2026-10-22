@@ -895,6 +895,64 @@ test('handleRescheduleBooking: tolak format jam sampah', () => {
   assert.equal(result.error.code, 'VALIDATION_ERROR');
 });
 
+// ============================================================
+// Reschedule hitung ulang harga (P2, fix 2026-10-22)
+// Fixture: NOW = Senin 2026-10-05 10:00 WIB. Booking Selasa 2026-10-06
+// jam 10:00 (non-peak) 2 jam x 45000 = 90000. Pindah ke jam 18:00 (peak,
+// multiplier 1,5) harus jadi 2 x 67500 = 135000 dan tertulis ke sheet.
+// ============================================================
+function rescheduleFixture(ctx, addonTotal, totalHarga) {
+  vm.runInContext(`
+    var __vals = [
+      ['booking_id','created_at','email','nama','venue_id','tanggal','jam_mulai','durasi','total_harga','payment_option','payment_status','status','addon_total','addons'],
+      ['LK-T1', new Date(), 'a@x.com', 'A', 'LK1', '2026-10-06', '10:00', 2, ${totalHarga}, 'full', 'paid', 'active', ${addonTotal}, '']
+    ];
+    var __lap = [
+      ['id','nama','olahraga','harga_per_jam','status'],
+      ['LK1','Lapangan 1','Bulu Tangkis',45000,'aktif'],
+      ['LK2','Lapangan 2','Bulu Tangkis',45000,'aktif'],
+      ['LK3','Lapangan 3','Bulu Tangkis',45000,'aktif'],
+      ['LK4','Lapangan 4','Bulu Tangkis',45000,'aktif']
+    ];
+    function __sheet(rows) {
+      return {
+        getDataRange: () => ({ getValues: () => rows }),
+        getRange: (r, c) => ({ setValue: (v) => { rows[r - 1][c - 1] = v; } })
+      };
+    }
+    SpreadsheetApp.getActiveSpreadsheet = () => ({
+      getSheetByName: (name) => {
+        if (name === 'Booking') return __sheet(__vals);
+        if (name === 'Lapangan') return __sheet(__lap);
+        if (name === 'ErrorLog') return { appendRow: () => {} };
+        return null;
+      }
+    });
+    Utilities = (typeof Utilities !== 'undefined' ? Utilities : {});
+    Utilities.formatDate = function () { return '2026-10-05'; };
+  `, ctx);
+}
+
+test('rescheduleBookingTx: total_harga dihitung ulang saat pindah ke jam peak', () => {
+  const ctx = setup(NOW);
+  rescheduleFixture(ctx, 0, 90000);
+  const r = vm.runInContext(`
+    var r = rescheduleBookingTx('LK-T1', '2026-10-06', '18', { email: 'a@x.com', name: 'A' });
+    [r.total_harga, r.total_harga_lama, r.selisih_harga, __vals[1][8], __vals[1][5], __vals[1][6]].join('|')
+  `, ctx);
+  assert.equal(r, '135000|90000|45000|135000|2026-10-06|18:00');
+});
+
+test('rescheduleBookingTx: addon_total dipertahankan di atas harga lapangan baru', () => {
+  const ctx = setup(NOW);
+  rescheduleFixture(ctx, 10000, 100000);
+  const r = vm.runInContext(`
+    var r = rescheduleBookingTx('LK-T1', '2026-10-06', '18', { email: 'a@x.com', name: 'A' });
+    [r.total_harga, r.selisih_harga, __vals[1][8]].join('|')
+  `, ctx);
+  assert.equal(r, '145000|45000|145000');
+});
+
 test('checkAnonRateLimit: izinkan di bawah batas, tolak di atas', () => {
   const ctx = setup(NOW);
   vm.runInContext(`
