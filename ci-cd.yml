@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Run tests
+      run: node tests/run-tests.mjs
+
+    - name: Build single-file
+      run: node tools/build-single.mjs
+
+    # WHY (P2, 2026-10-22): CI dulu tidak pernah menjalankan build-ssr — generator
+    # shell yang rusak/stale lolos diam-diam. Sekarang: regenerasi SSR + rehash,
+    # lalu gagalkan job bila index.html yang ter-commit tidak lagi segar.
+    - name: Regenerate SSR shell
+      run: node tools/build-ssr.mjs
+
+    - name: Rehash CSP after SSR
+      run: node tools/build-single.mjs
+
+    - name: Verify committed build is fresh
+      run: git diff --exit-code -- index.html
