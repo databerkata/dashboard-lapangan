@@ -23,8 +23,8 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>LapanganKu - Booking Lapangan Bulu Tangkis</title>
 <meta name="description" content="Booking lapangan bulu tangkis online di Jakarta Selatan. 4 lapangan indoor standar pertandingan, buka setiap hari 06.00-22.00. Pilih jam, bayar, langsung main.">
-<meta name="theme-color" content="#F3F4EC" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B0E0A" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F172A" media="(prefers-color-scheme: dark)">
 <!-- WHY P3 (perkuat keunggulan): meta lengkap yang kompetitor punya tapi kita belum.
      - geo: venue fisik -> relevan untuk pencarian lokal ("lapangan badminton dekat saya")
      - twitter:site/creator: atribusi saat dibagikan
@@ -135,7 +135,18 @@
  /* WHY font: -apple-system resolve ke San Francisco di macOS/iOS.
     BlinkMacSystemFont untuk Chrome di macOS. Tanpa fallback sans-serif —
     di platform non-Apple, browser pakai default sistem (Arial/Helvetica). */
- --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+ /* WHY (2026-10-24, permintaan Mas): font, skala ukuran, dan struktur warna menyalin
+    sistem KapalPro (SF Pro Display utk judul/angka besar, SF Pro Text utk isi,
+    skala clamp, sasis netral slate) - hue utama diganti biru ke hijau. */
+ --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+ --font-body: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+ --font: var(--font-body);
+ --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem;
+ --text-lg: clamp(1.125rem, 1.06rem + 0.34vw, 1.25rem);
+ --text-xl: clamp(1.25rem, 1.15rem + 0.50vw, 1.5rem);
+ --text-2xl: clamp(1.5rem, 1.31rem + 0.95vw, 2rem);
+ --text-3xl: clamp(2rem, 1.65rem + 1.75vw, 3rem);
+ --text-4xl: clamp(2.25rem, 1.71rem + 2.90vw, 3.5rem);
  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
  /* spacing scale 8px base */
  --sp-1: 8px; --sp-2: 16px; --sp-3: 24px; --sp-4: 32px; --sp-5: 48px; --sp-6: 64px; --sp-7: 80px;
@@ -150,33 +161,33 @@
  --sh-sm: 0 1px 2px rgba(0,0,0,.04), 0 2px 8px rgba(0,0,0,.06);
  --sh-md: 0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
  --sh-lg: 0 8px 32px rgba(0,0,0,.12), 0 16px 48px rgba(0,0,0,.10); }
-[data-theme="dark"]{ --bg:#0B0E0A; --bg2:#10140E; --bg3:#171D14;
- --border:#222B1F; --border2:#33402C;
- --text:#EEF3E4; --text2:#9BA895; --text3:#79877A; 
- --brand:#C8F53A; --brand2:#DBFF66; --on-brand:#0B0F05;
- --brand-text:#C8F53A; --brand-soft:rgba(200,245,58,.10);
- --brand-strong:#C8F53A; 
- --accent:#FF8A3D; --on-accent:#1A0E02; --accent-soft:rgba(255,138,61,.12);
+[data-theme="dark"]{ --bg:#0F172A; --bg2:#1E293B; --bg3:#334155;
+ --border:#334155; --border2:#475569;
+ --text:#F8FAFC; --text2:#CBD5E1; --text3:#94A3B8; 
+ --brand:#4ADE80; --brand2:#22C55E; --on-brand:#052E16;
+ --brand-text:#4ADE80; --brand-soft:rgba(74,222,128,.12);
+ --brand-strong:#86EFAC; 
+ --accent:#4ADE80; --on-accent:#052E16; --accent-soft:rgba(74,222,128,.12);
  --ok:#6FE59A; --warn:#FFC94D; --bad:#FF7A70;
  --ok-soft:rgba(111,229,154,.12); --warn-soft:rgba(255,201,77,.12); --bad-soft:rgba(255,122,112,.12);
  --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.38), 0 20px 48px rgba(0,0,0,.30);
  --shadow-sm: 0 1px 2px rgba(0,0,0,.30), 0 4px 12px rgba(0,0,0,.22);
- --focus:#C8F53A; --scrim:rgba(5,7,4,.66);
+ --focus:#4ADE80; --scrim:rgba(2,6,17,.66);
  /* WHY --hatch (audit P1-4): lihat catatan di tema terang - pola diagonal penanda slot terisi. */
  --hatch: repeating-linear-gradient(45deg, transparent 0 3px, var(--border2) 3px 4px);
  color-scheme: dark; }
-[data-theme="light"]{ --bg:#F3F4EC; --bg2:#FBFCF7; --bg3:#E7EBDD;
- --border:#D4DAC6; --border2:#B4BEA2;
- --text:#161B10; --text2:#4C5745; --text3:#68735F;
- --brand:#B9E72B; --brand2:#A7D61E; --on-brand:#121605;
- --brand-text:#44660A; --brand-soft:rgba(120,170,20,.13);
- --brand-strong:#5F8F00; 
- --accent:#B4540A; --on-accent:#FFFFFF; --accent-soft:rgba(180,84,10,.12);
+[data-theme="light"]{ --bg:#F8FAFC; --bg2:#FFFFFF; --bg3:#F1F5F9;
+ --border:#E2E8F0; --border2:#CBD5E1;
+ --text:#0F172A; --text2:#475569; --text3:#64748B;
+ --brand:#16A34A; --brand2:#22C55E; --on-brand:#FFFFFF;
+ --brand-text:#15803D; --brand-soft:rgba(22,163,74,.10);
+ --brand-strong:#166534; 
+ --accent:#15803D; --on-accent:#FFFFFF; --accent-soft:rgba(21,128,61,.10);
  --ok:#17703B; --warn:#8A6100; --bad:#B93A30;
  --ok-soft:rgba(23,112,59,.10); --warn-soft:rgba(138,97,0,.10); --bad-soft:rgba(185,58,48,.09);
- --shadow: 0 1px 1px rgba(22,27,16,.04), 0 4px 14px rgba(22,27,16,.08), 0 12px 32px rgba(22,27,16,.10); 
- --shadow-sm: 0 1px 2px rgba(22,27,16,.06), 0 2px 8px rgba(22,27,16,.08);
- --focus:#44660A; --scrim:rgba(22,27,16,.5);
+ --shadow: 0 1px 1px rgba(15,23,42,.04), 0 4px 14px rgba(15,23,42,.08), 0 12px 32px rgba(15,23,42,.10); 
+ --shadow-sm: 0 1px 2px rgba(15,23,42,.06), 0 2px 8px rgba(15,23,42,.08);
+ --focus:#16A34A; --scrim:rgba(15,23,42,.5);
  /* WHY --hatch (audit P1-4): dipakai .slot.booked + legenda l-booked sebagai pembeda visual
     "terisi" vs "tidak bisa". Sebelumnya variabel ini TIDAK PERNAH didefinisikan sehingga
     deklarasi background jadi tidak valid dan pola hatch hilang di kedua tema. */
@@ -186,7 +197,7 @@
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 html{ scroll-behavior:smooth; }
 body{ background:var(--bg); color:var(--text);
- font-family:var(--font);
+ font-family:var(--font-body);
  font-size:16px; line-height:1.5;
  -webkit-font-smoothing:antialiased; }
 img,svg{ max-width:100%; display:block; }
@@ -208,10 +219,11 @@ h1[tabindex="-1"]:focus{ outline:none !important; box-shadow:none !important; }
 .skip-link:focus{ transform:translateY(0); }
 .link-plain{ background:none; border:none; cursor:pointer; padding:12px 8px; margin:-12px -8px; display:inline-block; color:var(--brand-text); text-decoration:underline; }
 /* Typography scale: 12, 14, 16, 20, 24, 32, 48, 72 — weight 400/600/700/800 — tracking -0.02em/0/.01em */
-h1{ font-size:48px; line-height:1.15; letter-spacing:-0.025em; font-weight:var(--fw-bold); }
-h2{ font-size:32px; line-height:1.25; letter-spacing:-0.02em; font-weight:var(--fw-bold); }
-h3{ font-size:20px; font-weight:var(--fw-semibold); line-height:1.35; letter-spacing:-0.01em; }
-.display{ font-size:clamp(40px, 5.5vw, 72px); line-height:1.08; letter-spacing:-0.03em; font-weight:var(--fw-bold); font-optical-sizing:auto; }
+h1{ font-family:var(--font-display); font-size:var(--text-4xl); line-height:1.15; letter-spacing:-0.025em; font-weight:var(--fw-bold); }
+h2{ font-family:var(--font-display); font-size:clamp(1.75rem, 1.53rem + 1.10vw, 2.25rem); line-height:1.25; letter-spacing:-0.02em; font-weight:var(--fw-bold); }
+h3{ font-family:var(--font-display); font-size:var(--text-2xl); font-weight:var(--fw-semibold); line-height:1.35; letter-spacing:-0.01em; }
+.display{ font-family:var(--font-display); font-size:var(--text-4xl); line-height:1.08; letter-spacing:-0.03em; font-weight:var(--fw-bold); font-optical-sizing:auto; }
+.kpi-value,.summary-total b,.booking-code,.ccv-amount,.step .n{ font-family:var(--font-display); }
 .mlabel{ font-size:12px; letter-spacing:.01em; color:var(--text2); font-weight:var(--fw-semibold); }
 .mlabel b{ color:var(--brand-text); font-weight:var(--fw-bold); }
 .muted{ color:var(--text2); } .faint{ color:var(--text3); }
@@ -270,7 +282,7 @@ h3{ font-size:20px; font-weight:var(--fw-semibold); line-height:1.35; letter-spa
 .sec-rule{ display:flex; justify-content:space-between; align-items:baseline; gap:24px; border-top:1px solid var(--border); padding-top:16px; margin-bottom:32px; flex-wrap:wrap; }
 .sec h2{ margin-bottom:12px; letter-spacing:-0.02em; }
 .lede{ color:var(--text2); font-size:16px; max-width:44em; margin-bottom:32px; line-height:1.6; } 
-@media (max-width:768px){ :root{ --sec-pad:40px; } h1{ font-size:32px; letter-spacing:-0.01em; } h2{ font-size:24px; } h3{ font-size:16px; letter-spacing:0; } .display{ font-size:clamp(34px, 9vw, 44px); } } 
+@media (max-width:768px){ :root{ --sec-pad:40px; } h1{ letter-spacing:-0.01em; } h3{ letter-spacing:0; } } 
 /* ============ HEADER ============ */
 .hero-media picture{ display:block; aspect-ratio:1280/960; } /* WHY Lighthouse CLS: reflow saat hero img termuat menggeser footer (skor 0.74) - aspect-ratio di wrapper picture mencadangkan ruang lebih awal dari width/height img yang tertunda render */
 /* Waiver user (25 Sep): bebas dari batas blur RULES untuk pass apple-design - 16px + saturate 180% ala iOS.
@@ -3397,7 +3409,7 @@ function openInvoiceModal(id) {
       $('[data-print]', panel).addEventListener('click', () => {
         const content = $('#invoice-content', panel).innerHTML;
         const win = window.open('', '_blank', 'width=800,height=600');
-        win.document.write('<html><head><title>Invoice ' + esc(b.booking_id) + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;padding:40px;color:#161B10;background:#fff} .t-xs{font-size:12px}.muted{color:#68735F}.mono{font-variant-numeric:tabular-nums}</style></head><body>' + content + '</body></html>');
+        win.document.write('<html><head><title>Invoice ' + esc(b.booking_id) + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;padding:40px;color:#0F172A;background:#fff} .t-xs{font-size:12px}.muted{color:#64748B}.mono{font-variant-numeric:tabular-nums}</style></head><body>' + content + '</body></html>');
         win.document.close();
         win.focus();
         win.print();
