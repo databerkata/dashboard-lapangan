@@ -1167,7 +1167,7 @@ function openInvoiceModal(id) {
       $('[data-print]', panel).addEventListener('click', () => {
         const content = $('#invoice-content', panel).innerHTML;
         const win = window.open('', '_blank', 'width=800,height=600');
-        win.document.write('<html><head><title>Invoice ' + esc(b.booking_id) + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;padding:40px;color:#161B10;background:#fff} .t-xs{font-size:12px}.muted{color:#68735F}.mono{font-variant-numeric:tabular-nums}</style></head><body>' + content + '</body></html>');
+        win.document.write('<html><head><title>Invoice ' + esc(b.booking_id) + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;padding:40px;color:#0F172A;background:#fff} .t-xs{font-size:12px}.muted{color:#64748B}.mono{font-variant-numeric:tabular-nums}</style></head><body>' + content + '</body></html>');
         win.document.close();
         win.focus();
         win.print();
