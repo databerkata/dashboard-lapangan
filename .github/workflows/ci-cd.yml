@@ -29,13 +29,4 @@ jobs:
       run: node tools/build-single.mjs
 
     # WHY (P2, 2026-10-22): CI dulu tidak pernah menjalankan build-ssr â€” generator
-    # shell yang rusak/stale lolos diam-diam. Sekarang: regenerasi SSR + rehash,
-    # lalu gagalkan job bila index.html yang ter-commit tidak lagi segar.
-    - name: Regenerate SSR shell
-      run: node tools/build-ssr.mjs
-
-    - name: Rehash CSP after SSR
-      run: node tools/build-single.mjs
-
-    - name: Verify committed build is fresh
-      run: git diff --exit-code -- index.html
+    # shell yang rushk/stale lolos diam-diam. Sekarang: regenerasi SSR + rehaskˆÈ[HØYØ[Ø[ˆ›Øˆš[H[™^š[X[™È\‹XÛÛ[Z]YZÈYÚHÙYÙ\‹‚ˆH˜[YNˆ™YÙ[™\˜]HÔÔˆÚ[ˆ[ˆ›ÙHÛÛËØZ[\ÜÜ‹›ZœÂ‚ˆH˜[YNˆ™Z\ÚÔÔY\ˆÔÔ‚ˆ[ˆ›ÙHÛÛËØZ[\Ú[™ÛK›ZœÂ‚ˆH˜[YNˆ™\šYHÛÛ[Z]YZ[\Èœ™\Úˆ[ˆÚ]Y™ˆKY^]XÛÙHKH[™^š[
