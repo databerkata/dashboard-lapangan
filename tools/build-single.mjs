@@ -121,7 +121,7 @@ if (venue.name) {
 
   // Canonical & OG URL -> domain venue
   if (venue.canonical) {
-    html = html.split('https://lapanganku.web.id').join(venue.canonical.replace(/\/$/, ''));
+    html = html.split('https://databerkata.github.io/prototype-lapanganku').join(venue.canonical.replace(/\/$/, ''));
   }
   if (venue.ogImage) {
     html = html.replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${venue.ogImage}$2`);
